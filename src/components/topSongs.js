@@ -19,7 +19,6 @@ const useStyles = makeStyles({
     padding: "2px 0",
   },
   avatar: {
-    borderRadius: "0",
     marginLeft: "25px",
     marginRight: "30px",
   },
@@ -81,6 +80,7 @@ export default function TopSongs() {
                 <Avatar
                   alt={item.AlbumName}
                   src={item.AlbumCover}
+                  variant="square"
                   classes={{ root: classes.avatar }}
                 />
               </ListItemAvatar>
