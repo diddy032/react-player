@@ -8,6 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import AlbumCard from "./albumCard";
 import TopSongs from "./topSongs";
 import NewRelease from "./newRelease";
+import RecentAlbums from "./recentAlbums";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +43,7 @@ export default function Home() {
             <Paper elevation={0} className={classes.paper}>
               <TopSongs />
               <NewRelease />
+              <RecentAlbums />
             </Paper>
           </Grid>
         </Grid>
