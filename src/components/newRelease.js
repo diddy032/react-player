@@ -6,12 +6,13 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
   },
   content: {
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -43,6 +44,8 @@ export default function NewRelease() {
             <Box fontWeight="fontWeightBold" lineHeight="normal">
               But I must explain to You (Deluxe)
             </Box>
+          </Typography>
+          <Typography variant="subtitle1" align="center">
             <Box>2019.7.15</Box>
           </Typography>
         </CardContent>
