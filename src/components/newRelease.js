@@ -27,7 +27,7 @@ export default function NewRelease() {
   const theme = useTheme();
 
   return (
-    <div>
+    <Box my={2}>
       <Typography variant="h5" component="div" align="left">
         <Box fontWeight="fontWeightBold" lineHeight="normal">
           New Release
@@ -50,6 +50,6 @@ export default function NewRelease() {
           </Typography>
         </CardContent>
       </Card>
-    </div>
+    </Box>
   );
 }

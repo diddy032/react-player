@@ -12,6 +12,8 @@ import RecentAlbums from "./recentAlbums";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    height: "100vh",
+    position: "relative",
     flexGrow: 1,
     // maxWidth: "1200px",
     margin: "auto",
