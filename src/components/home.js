@@ -9,6 +9,7 @@ import AlbumCard from "./albumCard";
 import TopSongs from "./topSongs";
 import NewRelease from "./newRelease";
 import RecentAlbums from "./recentAlbums";
+import AudioBar from './audioBar'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +47,7 @@ export default function Home() {
               <TopSongs />
               <NewRelease />
               <RecentAlbums />
+              <AudioBar/>
             </Paper>
           </Grid>
         </Grid>
