@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -9,6 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import PauseIcon from "@material-ui/icons/Pause";
 import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles({
@@ -89,10 +91,7 @@ export default function TopSongs() {
                 classes={{ root: classes.text }}
               />
               <ListItemText primary={item.AlbumTime} />
-
-              <IconButton aria-label="play music" color="inherit">
-                <PlayArrowIcon fontSize="small" />
-              </IconButton>
+              <HandlePlayMusic url="/audio/URL Melt - Unicorn Heads.mp3" />
             </ListItem>
             <Divider variant="middle" component="li" />
           </>
@@ -101,3 +100,42 @@ export default function TopSongs() {
     </div>
   );
 }
+
+function HandlePlayMusic({ url }) {
+  const [playing, toggle] = useAudio(url);
+  return (
+    <IconButton
+      aria-label="play music"
+      color="inherit"
+      onClick={() => {
+        toggle();
+      }}
+    >
+      {playing ? (
+        <PauseIcon fontSize="small" />
+      ) : (
+        <PlayArrowIcon fontSize="small" />
+      )}
+    </IconButton>
+  );
+}
+
+const useAudio = (url) => {
+  const [audio] = useState(new Audio(url));
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => setPlaying(!playing);
+
+  useEffect(() => {
+    playing ? audio.play() : audio.pause();
+  }, [playing]);
+
+  useEffect(() => {
+    audio.addEventListener("ended", () => setPlaying(false));
+    return () => {
+      audio.removeEventListener("ended", () => setPlaying(false));
+    };
+  }, []);
+
+  return [playing, toggle];
+};
