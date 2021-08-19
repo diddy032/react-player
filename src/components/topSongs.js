@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import useAudioPlay from "./hook/audioPlay";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
@@ -34,32 +35,38 @@ const listData = [
   {
     AlbumName: "great pleasure",
     AlbumCover: "/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg",
+    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
     AlbumTime: "5:34",
   },
   {
     AlbumName: "mistaken idea",
     AlbumCover: "/images/david-clode-xNSCi_K179c-unsplash.jpg",
+    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
     AlbumTime: "5:34",
   },
   {
     AlbumName: "explorer of the truth",
     AlbumCover: "/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
+    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
     AlbumTime: "5:34",
   },
   {
     AlbumName: "master builder",
     AlbumCover: "/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
+    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
     AlbumTime: "5:34",
   },
   {
     AlbumName: "because it is pain",
     AlbumCover: "images/piron-guillaume-NM77255WWVA-unsplash.jpg",
+    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
     AlbumTime: "5:34",
   },
 ];
 
 export default function TopSongs() {
   const classes = useStyles();
+  const [players, toggle] = useAudioPlay(listData);
 
   return (
     <div>
@@ -70,7 +77,7 @@ export default function TopSongs() {
       </Typography>
       <List className={classes.root}>
         {listData.map((item, index) => (
-          <>
+          <Box component="span" key={`top-song-${index}`}>
             <ListItem
               alignItems="center"
               classes={{ root: classes.inlineItem }}
@@ -91,26 +98,22 @@ export default function TopSongs() {
                 classes={{ root: classes.text }}
               />
               <ListItemText primary={item.AlbumTime} />
-              <HandlePlayMusic url="/audio/URL Melt - Unicorn Heads.mp3" />
+              <HandlePlayMusic
+                playing={players[index].playing}
+                toggle={toggle(index)}
+              />
             </ListItem>
             <Divider variant="middle" component="li" />
-          </>
+          </Box>
         ))}
       </List>
     </div>
   );
 }
 
-function HandlePlayMusic({ url }) {
-  const [playing, toggle] = useAudio(url);
+function HandlePlayMusic({ playing, toggle }) {
   return (
-    <IconButton
-      aria-label="play music"
-      color="inherit"
-      onClick={() => {
-        toggle();
-      }}
-    >
+    <IconButton aria-label="play music" color="inherit" onClick={toggle}>
       {playing ? (
         <PauseIcon fontSize="small" />
       ) : (
@@ -120,22 +123,22 @@ function HandlePlayMusic({ url }) {
   );
 }
 
-const useAudio = (url) => {
-  const [audio] = useState(new Audio(url));
-  const [playing, setPlaying] = useState(false);
+// const useAudio = (url) => {
+//   const [audio] = useState(new Audio(url));
+//   const [playing, setPlaying] = useState(false);
 
-  const toggle = () => setPlaying(!playing);
+//   const toggle = () => setPlaying(!playing);
 
-  useEffect(() => {
-    playing ? audio.play() : audio.pause();
-  }, [playing]);
+//   useEffect(() => {
+//     playing ? audio.play() : audio.pause();
+//   }, [playing]);
 
-  useEffect(() => {
-    audio.addEventListener("ended", () => setPlaying(false));
-    return () => {
-      audio.removeEventListener("ended", () => setPlaying(false));
-    };
-  }, []);
+//   useEffect(() => {
+//     audio.addEventListener("ended", () => setPlaying(false));
+//     return () => {
+//       audio.removeEventListener("ended", () => setPlaying(false));
+//     };
+//   }, []);
 
-  return [playing, toggle];
-};
+//   return [playing, toggle];
+// };
