@@ -1,5 +1,7 @@
+import clsx from "clsx";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
+import PropTypes from "prop-types";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -14,34 +16,36 @@ import Typography from "@material-ui/core/Typography";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+import ZoomOutMapIcon from "@material-ui/icons/ZoomOutMap";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import Slider from "@material-ui/core/Slider";
 import VolumeUp from "@material-ui/icons/VolumeUp";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
   details: {
+    padding: theme.spacing(1.2, 2),
     display: "flex",
     flexDirection: "row",
     backgroundColor: "rgba(0 ,0 ,0 , 0.8)",
     color: "#fff",
   },
   content: {
-    flex: "1 0 auto",
+    padding: "0",
+    height: "fit-content",
+    margin: "auto",
+    // flex: "1 0 auto",
   },
   cover: {
     width: "96px",
     height: "96px",
   },
-  controls: {
-    display: "flex",
-    alignItems: "center",
-    paddingLeft: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
+  // controls: {
+  // },
   playIcon: {
     height: 38,
     width: 38,
@@ -50,8 +54,20 @@ const useStyles = makeStyles((theme) => ({
     background: "#fff",
     borderRadius: "50%",
   },
-  musicBtn: {
+  audioBarColor: {
     color: "#fff",
+  },
+  zoomOutIcon: {
+    paddingRight: "0",
+  },
+  musicProgress: {
+    height: "5px",
+  },
+  progressColorPrimary: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+  },
+  progressColorBar: {
+    backgroundColor: "#FF6C00",
   },
 }));
 
@@ -79,10 +95,15 @@ export default function AudioBar() {
                 </Box>
               </Typography>
             </CardContent>
-            <div className={classes.controls}>
+            <Box
+              display="flex"
+              alignItems="center"
+              flex="auto"
+              // className={classes.controls}
+            >
               <IconButton
                 aria-label="previous"
-                classes={{ root: classes.musicBtn }}
+                classes={{ root: classes.audioBarColor }}
               >
                 {theme.direction === "rtl" ? (
                   <SkipNextIcon />
@@ -95,7 +116,7 @@ export default function AudioBar() {
               </IconButton>
               <IconButton
                 aria-label="next"
-                classes={{ root: classes.musicBtn }}
+                classes={{ root: classes.audioBarColor }}
               >
                 {theme.direction === "rtl" ? (
                   <SkipPreviousIcon />
@@ -103,19 +124,48 @@ export default function AudioBar() {
                   <SkipNextIcon />
                 )}
               </IconButton>
-              <Box>
-                <Grid container spacing={2}>
+              {/* 聲音大小 */}
+              <Box width="30%" maxWidth="150px" ml="auto" mr="10px">
+                <Grid container spacing={2} alignItems="center">
                   <Grid item>
                     <VolumeUp />
                   </Grid>
-                  <Grid item>
-                    <Slider aria-labelledby="input-slider" />
+                  <Grid item xs>
+                    <Slider
+                      ValueLabelComponent={ValueLabelComponent}
+                      aria-labelledby="input-slider"
+                      defaultValue={20}
+                      classes={{
+                        root: classes.audioBarColor,
+                      }}
+                    />
                   </Grid>
                 </Grid>
               </Box>
-            </div>
+
+              {/* 放大播放器畫面 */}
+              <IconButton
+                p="0"
+                aria-label="ZoomOutPlayer"
+                classes={{
+                  root: clsx(classes.audioBarColor, classes.zoomOutIcon),
+                }}
+              >
+                <ZoomOutMapIcon />
+              </IconButton>
+            </Box>
           </div>
-          <MusicProgress variant="determinate" value={50} />
+
+          {/* 音樂進度軸 */}
+          <MusicProgress
+            variant="determinate"
+            value={50}
+            classes={{
+              root: classes.musicProgress,
+              colorPrimary: classes.progressColorPrimary,
+              barColorPrimary: classes.progressColorBar,
+            }}
+          />
         </div>
       </Card>
       {/* <Box component="div" bgcolor="text.primary" color="background.paper">
@@ -132,10 +182,26 @@ export default function AudioBar() {
 
 function MusicProgress(props) {
   return (
-    <Box display="flex" alignItems="center">
+    <Box display="flex" alignItems="center" bgcolor="text.secondary">
       <Box width="100%">
         <LinearProgress variant="determinate" {...props} />
       </Box>
     </Box>
   );
 }
+
+function ValueLabelComponent(props) {
+  const { children, open, value } = props;
+
+  return (
+    <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
+      {children}
+    </Tooltip>
+  );
+}
+
+ValueLabelComponent.propTypes = {
+  children: PropTypes.element.isRequired,
+  open: PropTypes.bool.isRequired,
+  value: PropTypes.number.isRequired,
+};
