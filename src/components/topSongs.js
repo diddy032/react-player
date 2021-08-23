@@ -14,6 +14,8 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import IconButton from "@material-ui/core/IconButton";
 
+import musicDataList from "../data/musicList";
+
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -31,42 +33,9 @@ const useStyles = makeStyles({
   },
 });
 
-const listData = [
-  {
-    AlbumName: "great pleasure",
-    AlbumCover: "/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg",
-    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
-    AlbumTime: "5:34",
-  },
-  {
-    AlbumName: "mistaken idea",
-    AlbumCover: "/images/david-clode-xNSCi_K179c-unsplash.jpg",
-    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
-    AlbumTime: "5:34",
-  },
-  {
-    AlbumName: "explorer of the truth",
-    AlbumCover: "/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
-    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
-    AlbumTime: "5:34",
-  },
-  {
-    AlbumName: "master builder",
-    AlbumCover: "/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
-    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
-    AlbumTime: "5:34",
-  },
-  {
-    AlbumName: "because it is pain",
-    AlbumCover: "images/piron-guillaume-NM77255WWVA-unsplash.jpg",
-    AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
-    AlbumTime: "5:34",
-  },
-];
-
 export default function TopSongs() {
   const classes = useStyles();
-  const [players, toggle] = useAudioPlay(listData);
+  const [players, toggle] = useAudioPlay(musicDataList);
 
   return (
     <div>
@@ -76,36 +45,37 @@ export default function TopSongs() {
         </Box>
       </Typography>
       <List className={classes.root}>
-        {listData.map((item, index) => (
-          <Box component="span" key={`top-song-${index}`}>
-            <ListItem
-              alignItems="center"
-              classes={{ root: classes.inlineItem }}
-            >
-              <Box>
-                <ListItemText primary={index + 1} />
-              </Box>
-              <ListItemAvatar>
-                <Avatar
-                  alt={item.AlbumName}
-                  src={item.AlbumCover}
-                  variant="square"
-                  classes={{ root: classes.avatar }}
+        {musicDataList?.length > 0 &&
+          musicDataList?.map((item, index) => (
+            <Box component="span" key={`top-song-${index}`}>
+              <ListItem
+                alignItems="center"
+                classes={{ root: classes.inlineItem }}
+              >
+                <Box>
+                  <ListItemText primary={index + 1} />
+                </Box>
+                <ListItemAvatar>
+                  <Avatar
+                    alt={item.AlbumName}
+                    src={item.AlbumCover}
+                    variant="square"
+                    classes={{ root: classes.avatar }}
+                  />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={item.AlbumName}
+                  classes={{ root: classes.text }}
                 />
-              </ListItemAvatar>
-              <ListItemText
-                primary={item.AlbumName}
-                classes={{ root: classes.text }}
-              />
-              <ListItemText primary={item.AlbumTime} />
-              <HandlePlayMusic
-                playing={players[index].playing}
-                toggle={toggle(index)}
-              />
-            </ListItem>
-            <Divider variant="middle" component="li" />
-          </Box>
-        ))}
+                <ListItemText primary={item.AlbumTime} />
+                <HandlePlayMusic
+                  playing={players[index].playing}
+                  toggle={toggle(index)}
+                />
+              </ListItem>
+              <Divider variant="middle" component="li" />
+            </Box>
+          ))}
       </List>
     </div>
   );
@@ -122,23 +92,3 @@ function HandlePlayMusic({ playing, toggle }) {
     </IconButton>
   );
 }
-
-// const useAudio = (url) => {
-//   const [audio] = useState(new Audio(url));
-//   const [playing, setPlaying] = useState(false);
-
-//   const toggle = () => setPlaying(!playing);
-
-//   useEffect(() => {
-//     playing ? audio.play() : audio.pause();
-//   }, [playing]);
-
-//   useEffect(() => {
-//     audio.addEventListener("ended", () => setPlaying(false));
-//     return () => {
-//       audio.removeEventListener("ended", () => setPlaying(false));
-//     };
-//   }, []);
-
-//   return [playing, toggle];
-// };

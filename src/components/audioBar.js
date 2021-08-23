@@ -1,3 +1,6 @@
+import { useState } from "react";
+import useAudioPlay from "./hook/audioPlay";
+
 import clsx from "clsx";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
@@ -14,6 +17,7 @@ import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
+import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import ZoomOutMapIcon from "@material-ui/icons/ZoomOutMap";
@@ -22,6 +26,8 @@ import Grid from "@material-ui/core/Grid";
 import Slider from "@material-ui/core/Slider";
 import VolumeUp from "@material-ui/icons/VolumeUp";
 import Tooltip from "@material-ui/core/Tooltip";
+
+import musicDataList from "../data/musicList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,6 +80,11 @@ const useStyles = makeStyles((theme) => ({
 export default function AudioBar() {
   const classes = useStyles();
   const theme = useTheme();
+  const [players, toggle] = useAudioPlay(musicDataList);
+  const [nowPlayNum, setNowPlayNum] = useState(0);
+
+  console.log("players:", players);
+
   return (
     <Box>
       <Card className={classes.root}>
@@ -111,8 +122,12 @@ export default function AudioBar() {
                   <SkipPreviousIcon />
                 )}
               </IconButton>
-              <IconButton aria-label="play/pause">
-                <PlayArrowIcon classes={{ root: classes.playIcon }} />
+              <IconButton aria-label="play/pause" onClick={toggle(nowPlayNum)}>
+                {players[nowPlayNum].playing ? (
+                  <PauseIcon classes={{ root: classes.playIcon }} />
+                ) : (
+                  <PlayArrowIcon classes={{ root: classes.playIcon }} />
+                )}
               </IconButton>
               <IconButton
                 aria-label="next"
