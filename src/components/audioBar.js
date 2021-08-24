@@ -85,6 +85,16 @@ export default function AudioBar() {
 
   console.log("players:", players);
 
+  const arrorEvent = (str) => {
+    let num = nowPlayNum;
+    if (str === "pre") nowPlayNum !== 0 ? (num -= 1) : (num = 0);
+    if (str === "next")
+      nowPlayNum !== musicDataList.length ? num++ : (num = nowPlayNum);
+
+    toggle(num);
+    setNowPlayNum(num);
+  };
+
   return (
     <Box>
       <Card className={classes.root}>
@@ -115,6 +125,7 @@ export default function AudioBar() {
               <IconButton
                 aria-label="previous"
                 classes={{ root: classes.audioBarColor }}
+                onClick={() => arrorEvent("pre")}
               >
                 {theme.direction === "rtl" ? (
                   <SkipNextIcon />
@@ -122,7 +133,10 @@ export default function AudioBar() {
                   <SkipPreviousIcon />
                 )}
               </IconButton>
-              <IconButton aria-label="play/pause" onClick={toggle(nowPlayNum)}>
+              <IconButton
+                aria-label="play/pause"
+                onClick={() => toggle(nowPlayNum)}
+              >
                 {players[nowPlayNum].playing ? (
                   <PauseIcon classes={{ root: classes.playIcon }} />
                 ) : (
@@ -132,6 +146,7 @@ export default function AudioBar() {
               <IconButton
                 aria-label="next"
                 classes={{ root: classes.audioBarColor }}
+                onClick={() => arrorEvent("next")}
               >
                 {theme.direction === "rtl" ? (
                   <SkipPreviousIcon />

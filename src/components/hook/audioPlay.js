@@ -22,7 +22,8 @@ export default function useAudioPlay(urls) {
   );
 
   //點擊按鈕後的行為
-  const toggle = (targetIndex) => () => {
+  const toggle = (targetIndex) => {
+    console.log("點擊toggle的function:", targetIndex);
     const newPlayers = [...players];
     const currentIndex = players.findIndex((e) => e.playing === true); //找出第幾個音樂播放
 

@@ -70,7 +70,7 @@ export default function TopSongs() {
                 <ListItemText primary={item.AlbumTime} />
                 <HandlePlayMusic
                   playing={players[index].playing}
-                  toggle={toggle(index)}
+                  toggle={() => toggle(index)}
                 />
               </ListItem>
               <Divider variant="middle" component="li" />
