@@ -2,8 +2,6 @@ import { useState } from "react";
 import useAudioPlay from "./hook/audioPlay";
 
 import clsx from "clsx";
-import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css";
 import PropTypes from "prop-types";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -25,6 +23,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import Slider from "@material-ui/core/Slider";
 import VolumeUp from "@material-ui/icons/VolumeUp";
+import VolumeOffIcon from "@material-ui/icons/VolumeOff";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import musicDataList from "../data/musicList";
@@ -80,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AudioBar() {
   const classes = useStyles();
   const theme = useTheme();
-  const [players, toggle, setVolume] = useAudioPlay(musicDataList);
+  const [players, toggle, volume, setVolume] = useAudioPlay(musicDataList);
   const [nowPlayNum, setNowPlayNum] = useState(0);
 
   console.log("players:", players);
@@ -162,7 +161,7 @@ export default function AudioBar() {
               <Box width="30%" maxWidth="150px" ml="auto" mr="10px">
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
-                    <VolumeUp />
+                    {volume !== 0 ? <VolumeUp /> : <VolumeOffIcon />}
                   </Grid>
                   <Grid item xs>
                     <Slider
@@ -203,14 +202,6 @@ export default function AudioBar() {
           />
         </div>
       </Card>
-      {/* <Box component="div" bgcolor="text.primary" color="background.paper">
-        great pleasure <br /> Richard Green
-      </Box> */}
-      {/* <AudioPlayer
-        autoPlay={false}
-        src="/audio/URL Melt - Unicorn Heads.mp3"
-        onPlay={(e) => console.log("onPlay")}
-      /> */}
     </Box>
   );
 }

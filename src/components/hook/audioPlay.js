@@ -44,8 +44,22 @@ export default function useAudioPlay(urls) {
   //偵測如果音樂狀態是true就播放，反之暫停
   useEffect(() => {
     sources.forEach((item, i) => {
-      players[i].playing ? item.audio.play() : item.audio.pause();
+      if (players[i].playing) {
+        item.audio.play();
+        console.log(
+          "目前播放的音樂:",
+          "\nduration:",
+          item.audio.duration,
+          "\ncurrentTime:",
+          item.audio.currentTime
+        );
+      } else {
+        item.audio.pause();
+      }
     });
+    // sources.forEach((item, i) => {
+    //   players[i].playing ? item.audio.play() : item.audio.pause();
+    // });
   }, [sources, players]);
 
   //檢測音量數值
@@ -74,5 +88,5 @@ export default function useAudioPlay(urls) {
     };
   }, []);
 
-  return [players, toggle, setVolume];
+  return [players, toggle, volume, setVolume];
 }
