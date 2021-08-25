@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AudioBar() {
   const classes = useStyles();
   const theme = useTheme();
-  const [players, toggle] = useAudioPlay(musicDataList);
+  const [players, toggle, setVolume] = useAudioPlay(musicDataList);
   const [nowPlayNum, setNowPlayNum] = useState(0);
 
   console.log("players:", players);
@@ -93,6 +93,10 @@ export default function AudioBar() {
 
     toggle(num);
     setNowPlayNum(num);
+  };
+
+  const handlePlayersChange = (event, newValue) => {
+    setVolume(newValue);
   };
 
   return (
@@ -154,7 +158,7 @@ export default function AudioBar() {
                   <SkipNextIcon />
                 )}
               </IconButton>
-              {/* 聲音大小 */}
+              {/* 音量Slider */}
               <Box width="30%" maxWidth="150px" ml="auto" mr="10px">
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
@@ -168,6 +172,7 @@ export default function AudioBar() {
                       classes={{
                         root: classes.audioBarColor,
                       }}
+                      onChange={handlePlayersChange}
                     />
                   </Grid>
                 </Grid>

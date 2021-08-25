@@ -21,6 +21,9 @@ export default function useAudioPlay(urls) {
     })
   );
 
+  //音量
+  const [volume, setVolume] = useState(20);
+
   //點擊按鈕後的行為
   const toggle = (targetIndex) => {
     console.log("點擊toggle的function:", targetIndex);
@@ -45,6 +48,13 @@ export default function useAudioPlay(urls) {
     });
   }, [sources, players]);
 
+  //檢測音量數值
+  useEffect(() => {
+    sources.forEach((item, i) => {
+      item.audio.volume = volume / 100;
+    });
+  }, [volume]);
+
   useEffect(() => {
     sources.forEach((item, i) => {
       item.audio.addEventListener("ended", () => {
@@ -64,5 +74,5 @@ export default function useAudioPlay(urls) {
     };
   }, []);
 
-  return [players, toggle];
+  return [players, toggle, setVolume];
 }
