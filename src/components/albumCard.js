@@ -2,6 +2,8 @@ import React from "react";
 import {
   withStyles,
   makeStyles,
+  createTheme,
+  ThemeProvider,
 } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -12,8 +14,9 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { orange } from "@material-ui/core/colors";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
+    margin: "auto",
     maxWidth: 600,
     boxShadow: "none",
     position: "relative",
@@ -22,13 +25,22 @@ const useStyles = makeStyles({
     zIndex: "2",
     "&::before": {
       content: '""',
-      width: "530px",
-      height: "530px",
+      maxWidth: "530px",
+      maxHeight: "530px",
+      width: "100%",
       backgroundColor: "#fff",
       position: "absolute",
       top: "-40px",
       left: "-53px",
       zIndex: "0",
+      height: "70vw",
+      zIndex: "2",
+      [theme.breakpoints.up("sm")]: {
+        height: "55vw",
+      },
+      [theme.breakpoints.up("md")]: {
+        height: "45vw",
+      },
     },
   },
   content: {
@@ -38,8 +50,15 @@ const useStyles = makeStyles({
   },
   media: {
     position: "relative",
-    height: 540,
+    maxHeight: "540px",
+    height: "70vw",
     zIndex: "2",
+    [theme.breakpoints.up("sm")]: {
+      height: "55vw",
+    },
+    [theme.breakpoints.up("md")]: {
+      height: "45vw",
+    },
   },
   followInfo: {
     marginRight: "auto",
@@ -54,13 +73,18 @@ const useStyles = makeStyles({
   roy: {
     margin: 20,
   },
-});
+}));
+const theme = createTheme();
 
-// const useStyles = makeStyles((theme) => ({
-//   margin: {
-//     margin: theme.spacing(1),
-//   },
-// }));
+theme.typography.h2 = {
+  fontSize: "1.2rem",
+  "@media (min-width:600px)": {
+    fontSize: "1.5rem",
+  },
+  [theme.breakpoints.up("md")]: {
+    fontSize: "3.75rem",
+  },
+};
 
 const FallowButton = withStyles((theme) => ({
   root: {
@@ -91,19 +115,22 @@ export default function AlbumCard() {
           className={classes.media}
           image="/images/richard-jaimes-jI5lCCGprgM-unsplash.jpg"
           title="Album Image"
+          variant="square"
         />
         <CardActions>
-          <Typography variant="h2" component="div" align="left">
-            <Box
-              fontWeight="fontWeightBold"
-              borderBottom={4}
-              lineHeight="normal"
-              letterSpacing={2}
-              m={0}
-            >
-              Richard Green
-            </Box>
-          </Typography>
+          <ThemeProvider theme={theme}>
+            <Typography variant="h2" component="div" align="left">
+              <Box
+                fontWeight="fontWeightBold"
+                borderBottom={4}
+                lineHeight="normal"
+                letterSpacing={2}
+                m={0}
+              >
+                Richard Green
+              </Box>
+            </Typography>
+          </ThemeProvider>
         </CardActions>
         <CardActions>
           <Typography
