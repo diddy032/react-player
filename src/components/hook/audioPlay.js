@@ -24,6 +24,9 @@ export default function useAudioPlay(urls) {
   //音量
   const [volume, setVolume] = useState(20);
 
+  //目前播放的物件
+  const [nowPlayer, setNowPlayer] = useState({});
+
   //點擊按鈕後的行為
   const toggle = (targetIndex) => {
     console.log("點擊toggle的function:", targetIndex);
@@ -51,7 +54,8 @@ export default function useAudioPlay(urls) {
           "\nduration:",
           item.audio.duration,
           "\ncurrentTime:",
-          item.audio.currentTime
+          item.audio.currentTime,
+          item
         );
       } else {
         item.audio.pause();
@@ -88,5 +92,6 @@ export default function useAudioPlay(urls) {
     };
   }, []);
 
-  return [players, toggle, volume, setVolume];
+  console.log("nowPlayer", nowPlayer);
+  return [players, toggle, volume, setVolume, nowPlayer];
 }

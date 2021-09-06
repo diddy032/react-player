@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
   musicProgress: {
     height: "5px",
+    cursor: "pointer",
   },
   progressColorPrimary: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -74,13 +75,18 @@ const useStyles = makeStyles((theme) => ({
   progressColorBar: {
     backgroundColor: "#FF6C00",
   },
+  musicProgressBar: {
+    pointerEvents: "none",
+  },
 }));
 
 export default function AudioBar() {
   const classes = useStyles();
   const theme = useTheme();
-  const [players, toggle, volume, setVolume] = useAudioPlay(musicDataList);
+  const [players, toggle, volume, setVolume, nowPlayer] =
+    useAudioPlay(musicDataList);
   const [nowPlayNum, setNowPlayNum] = useState(0);
+  const [secPercentage, setSecPercentage] = useState(0);
 
   console.log("players:", players);
 
@@ -96,6 +102,31 @@ export default function AudioBar() {
 
   const handlePlayersChange = (event, newValue) => {
     setVolume(newValue);
+  };
+
+  const updateProgress = (e) => {
+    let offset = e.target.getBoundingClientRect().left;
+    let newOffSet = e.clientX;
+    let newWidth = newOffSet - offset;
+    let secPercentage = parseInt((newWidth / e.target.clientWidth) * 100);
+
+    let aa = nowPlayer;
+    console.log("palying item:", nowPlayer);
+    console.log(
+      "offset:",
+      offset,
+      "\nnewOffSet:",
+      newOffSet,
+      "\nnewWidth:",
+      newWidth,
+      "\nsecPercentage:",
+      secPercentage,
+      "\nclientWidth",
+      e.target.clientWidth,
+      "\ntarget:",
+      e
+    );
+    setSecPercentage(secPercentage);
   };
 
   return (
@@ -193,12 +224,14 @@ export default function AudioBar() {
           {/* 音樂進度軸 */}
           <MusicProgress
             variant="determinate"
-            value={50}
+            value={secPercentage}
             classes={{
               root: classes.musicProgress,
               colorPrimary: classes.progressColorPrimary,
               barColorPrimary: classes.progressColorBar,
+              bar: classes.musicProgressBar,
             }}
+            updateProgress={updateProgress}
           />
         </div>
       </Card>
@@ -207,10 +240,16 @@ export default function AudioBar() {
 }
 
 function MusicProgress(props) {
+  const { updateProgress } = props;
+  console.log("music progress:", { ...props });
   return (
     <Box display="flex" alignItems="center" bgcolor="text.secondary">
       <Box width="100%">
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress
+          // variant="determinate"
+          {...props}
+          onClick={(e) => updateProgress(e)}
+        />
       </Box>
     </Box>
   );

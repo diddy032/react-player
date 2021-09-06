@@ -55,7 +55,13 @@ export default function Home() {
               </Hidden>
             </Paper>
           </Grid>
-          <Box position="fixed" zIndex="tooltip" right="0" left="0" bottom="0">
+          <Box
+            position="absolute"
+            zIndex="tooltip"
+            right="0"
+            left="0"
+            bottom="0"
+          >
             <Grid container justifyContent="flex-end">
               <Grid item md={7} xs={12}>
                 <AudioBar />
