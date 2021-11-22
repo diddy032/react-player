@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-export default function useAudioPlay(urls) {
+export default function useAudioPlay(urls, playback = true) {
   //音樂播放的陣列
   const [sources] = useState(
     urls.map((url) => {
@@ -47,6 +47,7 @@ export default function useAudioPlay(urls) {
   //偵測如果音樂狀態是true就播放，反之暫停
   useEffect(() => {
     sources.forEach((item, i) => {
+      if (playback) item.audio.currentTime = 0;
       if (players[i].playing) {
         item.audio.play();
         console.log(
