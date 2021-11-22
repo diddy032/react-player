@@ -30,8 +30,10 @@ const useStyles = makeStyles((theme) => ({
       width: "100%",
       backgroundColor: "#fff",
       position: "absolute",
-      top: "-40px",
-      left: "-53px",
+      top: "-4%",
+      left: "-5%",
+      // top: "-40px",
+      // left: "-53px",
       zIndex: "0",
       height: "70vw",
       zIndex: "2",
@@ -69,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px 40px",
     borderRadius: "22px",
     fontSize: "16px",
+    height: " min-content",
   },
   roy: {
     margin: 20,
@@ -109,30 +112,39 @@ const PlayButton = withStyles((theme) => ({
 export default function AlbumCard() {
   const classes = useStyles();
   return (
-    <Card className={classes.root}>
-      <CardContent className={classes.content}>
-        <CardMedia
-          className={classes.media}
-          image="/images/richard-jaimes-jI5lCCGprgM-unsplash.jpg"
-          title="Album Image"
-          variant="square"
-        />
-        <CardActions>
-          <ThemeProvider theme={theme}>
-            <Typography variant="h2" component="div" align="left">
-              <Box
-                fontWeight="fontWeightBold"
-                borderBottom={4}
-                lineHeight="normal"
-                letterSpacing={2}
-                m={0}
-              >
-                Richard Green
-              </Box>
-            </Typography>
-          </ThemeProvider>
-        </CardActions>
-        <CardActions>
+    <>
+      <Card className={classes.root}>
+        <CardContent className={classes.content}>
+          <CardMedia
+            className={classes.media}
+            image="/images/richard-jaimes-jI5lCCGprgM-unsplash.jpg"
+            title="Album Image"
+            variant="square"
+          />
+        </CardContent>
+      </Card>
+      <Box width="80%">
+        <ThemeProvider theme={theme}>
+          <Typography variant="h2" component="div" align="left">
+            <Box
+              fontWeight="fontWeightBold"
+              borderBottom={4}
+              lineHeight="normal"
+              letterSpacing={2}
+              m={0}
+            >
+              Richard Green
+            </Box>
+          </Typography>
+        </ThemeProvider>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "end",
+            marginTop: "15px",
+          }}
+        >
           <Typography
             gutterBottom
             component="div"
@@ -169,8 +181,8 @@ export default function AlbumCard() {
           >
             play
           </PlayButton>
-        </CardActions>
-      </CardContent>
-    </Card>
+        </Box>
+      </Box>
+    </>
   );
 }

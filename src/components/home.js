@@ -15,19 +15,23 @@ import AudioBar from "./audioBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100%",
+    height: "100vh",
     position: "relative",
     flexGrow: 1,
     margin: "auto",
     backgroundColor: "#F5F5F5",
   },
   container: {
-    padding: "5% 30px",
-    paddingBottom: "100px",
-    position: "relative",
-    [theme.breakpoints.up("md")]: {
-      padding: "3% 30px",
-    },
+    // padding: "5% 30px",
+    // paddingBottom: "100px",
+    margin: "2% 0",
+    position: "absolute",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    // [theme.breakpoints.up("md")]: {
+    //   padding: "3% 30px",
+    // },
   },
   paper: {
     width: "100%",
