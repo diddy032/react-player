@@ -83,12 +83,10 @@ const useStyles = makeStyles((theme) => ({
 export default function AudioBar() {
   const classes = useStyles();
   const theme = useTheme();
-  const [players, toggle, volume, setVolume, nowPlayer] =
+  const [players, toggle, volume, setVolume, handleChangeMusecSec] =
     useAudioPlay(musicDataList);
   const [nowPlayNum, setNowPlayNum] = useState(0);
   const [secPercentage, setSecPercentage] = useState(0);
-
-  console.log("players:", players);
 
   const arrorEvent = (str) => {
     let num = nowPlayNum;
@@ -100,33 +98,13 @@ export default function AudioBar() {
     setNowPlayNum(num);
   };
 
-  const handlePlayersChange = (event, newValue) => {
-    setVolume(newValue);
-  };
-
   const updateProgress = (e) => {
     let offset = e.target.getBoundingClientRect().left;
     let newOffSet = e.clientX;
     let newWidth = newOffSet - offset;
     let secPercentage = parseInt((newWidth / e.target.clientWidth) * 100);
-
-    let aa = nowPlayer;
-    console.log("palying item:", nowPlayer);
-    console.log(
-      "offset:",
-      offset,
-      "\nnewOffSet:",
-      newOffSet,
-      "\nnewWidth:",
-      newWidth,
-      "\nsecPercentage:",
-      secPercentage,
-      "\nclientWidth",
-      e.target.clientWidth,
-      "\ntarget:",
-      e
-    );
-    setSecPercentage(secPercentage);
+    handleChangeMusecSec(secPercentage);
+    setSecPercentage(secPercentage); //暫時用不到
   };
 
   return (
@@ -169,7 +147,7 @@ export default function AudioBar() {
               </IconButton>
               <IconButton
                 aria-label="play/pause"
-                onClick={() => toggle(nowPlayNum)}
+                onClick={() => toggle(nowPlayNum, true)}
               >
                 {players[nowPlayNum].playing ? (
                   <PauseIcon classes={{ root: classes.playIcon }} />
@@ -202,7 +180,7 @@ export default function AudioBar() {
                       classes={{
                         root: classes.audioBarColor,
                       }}
-                      onChange={handlePlayersChange}
+                      onChange={(e, num) => setVolume(num)}
                     />
                   </Grid>
                 </Grid>
@@ -223,7 +201,6 @@ export default function AudioBar() {
 
           {/* 音樂進度軸 */}
           <MusicProgress
-            variant="determinate"
             value={secPercentage}
             classes={{
               root: classes.musicProgress,
@@ -240,14 +217,14 @@ export default function AudioBar() {
 }
 
 function MusicProgress(props) {
-  const { updateProgress } = props;
-  console.log("music progress:", { ...props });
+  const { value, classes, updateProgress } = props;
   return (
     <Box display="flex" alignItems="center" bgcolor="text.secondary">
       <Box width="100%">
         <LinearProgress
-          // variant="determinate"
-          {...props}
+          variant="determinate"
+          value={value}
+          classes={classes}
           onClick={(e) => updateProgress(e)}
         />
       </Box>

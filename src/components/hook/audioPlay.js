@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function useAudioPlay(urls, playback = true) {
+export default function useAudioPlay(urls) {
   //音樂播放的陣列
   const [sources] = useState(
     urls.map((url) => {
@@ -25,40 +25,15 @@ export default function useAudioPlay(urls, playback = true) {
   const [volume, setVolume] = useState(20);
 
   //目前播放的物件
-  const [nowPlayer, setNowPlayer] = useState({});
-
-  //點擊按鈕後的行為
-  const toggle = (targetIndex) => {
-    console.log("點擊toggle的function:", targetIndex);
-    const newPlayers = [...players];
-    const currentIndex = players.findIndex((e) => e.playing === true); //找出第幾個音樂播放
-
-    if (currentIndex !== -1 && currentIndex !== targetIndex) {
-      newPlayers[currentIndex].playing = false;
-      newPlayers[targetIndex].playing = true;
-    } else if (currentIndex !== -1) {
-      newPlayers[targetIndex].playing = false;
-    } else {
-      newPlayers[targetIndex].playing = true;
-    }
-    setPlayers(newPlayers);
-  };
+  const [nowPlayer, setNowPlayer] = useState(0);
 
   //偵測如果音樂狀態是true就播放，反之暫停
   useEffect(() => {
     sources.forEach((item, i) => {
-      if (playback) item.audio.currentTime = 0;
       if (players[i].playing) {
         item.audio.play();
-        console.log(
-          "目前播放的音樂:",
-          "\nduration:",
-          item.audio.duration,
-          "\ncurrentTime:",
-          item.audio.currentTime,
-          item
-        );
       } else {
+        !players[i].followPlay && (item.audio.currentTime = 0);
         item.audio.pause();
       }
     });
@@ -93,6 +68,30 @@ export default function useAudioPlay(urls, playback = true) {
     };
   }, []);
 
-  console.log("nowPlayer", nowPlayer);
-  return [players, toggle, volume, setVolume, nowPlayer];
+  //點擊按鈕後的行為
+  const toggle = (targetIndex, followPlay) => {
+    const newPlayers = [...players];
+    const currentIndex = players.findIndex((e) => e.playing === true); //找出第幾個音樂播放
+    if (currentIndex !== -1 && currentIndex !== targetIndex) {
+      newPlayers[currentIndex].playing = false;
+      newPlayers[targetIndex].playing = true;
+    } else if (currentIndex !== -1) {
+      newPlayers[targetIndex].playing = false;
+      followPlay && (newPlayers[targetIndex].followPlay = true);
+    } else {
+      newPlayers[targetIndex].playing = true;
+    }
+    setPlayers(newPlayers);
+  };
+
+  const handleChangeMusecSec = (value) => {
+    sources.forEach((item, i) => {
+      if (players[i].playing) {
+        let time = (value / 100) * item.audio.duration;
+        item.audio.currentTime = time;
+      }
+    });
+  };
+
+  return [players, toggle, volume, setVolume, handleChangeMusecSec];
 }
