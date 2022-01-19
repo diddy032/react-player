@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import useAudioPlay from "./hook/audioPlay";
 
 import clsx from "clsx";
 import PropTypes from "prop-types";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 
 import Card from "@material-ui/core/Card";
@@ -19,7 +18,6 @@ import PauseIcon from "@material-ui/icons/Pause";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import ZoomOutMapIcon from "@material-ui/icons/ZoomOutMap";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import Slider from "@material-ui/core/Slider";
 import VolumeUp from "@material-ui/icons/VolumeUp";
@@ -36,21 +34,22 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1.2, 2),
     display: "flex",
     flexDirection: "row",
-    backgroundColor: "rgba(0 ,0 ,0 , 0.8)",
     color: "#fff",
   },
   content: {
     padding: "0",
     height: "fit-content",
     margin: "auto",
-    // flex: "1 0 auto",
   },
   cover: {
     width: "96px",
     height: "96px",
   },
-  // controls: {
-  // },
+  toolArea: {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "rgba(0 ,0 ,0 , 0.8)",
+  },
   playIcon: {
     height: 38,
     width: 38,
@@ -69,24 +68,44 @@ const useStyles = makeStyles((theme) => ({
     height: "5px",
     cursor: "pointer",
   },
-  progressColorPrimary: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-  },
-  progressColorBar: {
-    backgroundColor: "#FF6C00",
-  },
-  musicProgressBar: {
-    pointerEvents: "none",
+  progressStyle: {
+    color: "#FF6C00",
+    padding: 0,
+    height: 0,
+    display: "block",
+    "& .MuiSlider-track": {
+      height: 4,
+    },
+    "& .MuiSlider-thumb": {
+      display: "none",
+    },
+    "& .MuiSlider-rail": {
+      height: 4,
+      backgroundColor: "rgba(0, 0, 0, 1)",
+    },
   },
 }));
 
 export default function AudioBar() {
   const classes = useStyles();
   const theme = useTheme();
-  const [players, toggle, volume, setVolume, handleChangeMusecSec] =
-    useAudioPlay(musicDataList);
+  const [
+    players,
+    toggle,
+    volume,
+    setVolume,
+    handleChangeMusecSec,
+    secPercentage,
+  ] = useAudioPlay(musicDataList);
   const [nowPlayNum, setNowPlayNum] = useState(0);
-  const [secPercentage, setSecPercentage] = useState(0);
+  const [position, setPosition] = useState(secPercentage);
+  console.log(
+    "目前的秒數 這是在上層的 secPercentage",
+    secPercentage,
+    "position",
+    position
+  );
+  useMemo(() => setPosition(secPercentage), [secPercentage]);
 
   const arrorEvent = (str) => {
     let num = nowPlayNum;
@@ -98,15 +117,6 @@ export default function AudioBar() {
     setNowPlayNum(num);
   };
 
-  const updateProgress = (e) => {
-    let offset = e.target.getBoundingClientRect().left;
-    let newOffSet = e.clientX;
-    let newWidth = newOffSet - offset;
-    let secPercentage = parseInt((newWidth / e.target.clientWidth) * 100);
-    handleChangeMusecSec(secPercentage);
-    setSecPercentage(secPercentage); //暫時用不到
-  };
-
   return (
     <Box>
       <Card className={classes.root}>
@@ -116,7 +126,7 @@ export default function AudioBar() {
           variant="square"
           classes={{ root: classes.cover }}
         />
-        <div style={{ width: "100%", height: "100%" }}>
+        <div className={classes.toolArea}>
           <div className={classes.details}>
             <CardContent className={classes.content}>
               <Typography component="div" variant="body1">
@@ -174,13 +184,14 @@ export default function AudioBar() {
                   </Grid>
                   <Grid item xs>
                     <Slider
+                      aria-label="Volume"
                       ValueLabelComponent={ValueLabelComponent}
                       aria-labelledby="input-slider"
-                      defaultValue={20}
+                      defaultValue={30}
                       classes={{
                         root: classes.audioBarColor,
                       }}
-                      onChange={(e, num) => setVolume(num)}
+                      onChange={(_, num) => setVolume(num)}
                     />
                   </Grid>
                 </Grid>
@@ -200,34 +211,22 @@ export default function AudioBar() {
           </div>
 
           {/* 音樂進度軸 */}
-          <MusicProgress
-            value={secPercentage}
+          <Slider
+            aria-label="time-indicator"
+            size="small"
+            value={position}
+            min={0}
+            step={1}
+            max={100}
+            onChange={(_, value) => (
+              setPosition(value), handleChangeMusecSec(value)
+            )}
             classes={{
-              root: classes.musicProgress,
-              colorPrimary: classes.progressColorPrimary,
-              barColorPrimary: classes.progressColorBar,
-              bar: classes.musicProgressBar,
+              root: classes.progressStyle,
             }}
-            updateProgress={updateProgress}
           />
         </div>
       </Card>
-    </Box>
-  );
-}
-
-function MusicProgress(props) {
-  const { value, classes, updateProgress } = props;
-  return (
-    <Box display="flex" alignItems="center" bgcolor="text.secondary">
-      <Box width="100%">
-        <LinearProgress
-          variant="determinate"
-          value={value}
-          classes={classes}
-          onClick={(e) => updateProgress(e)}
-        />
-      </Box>
     </Box>
   );
 }
