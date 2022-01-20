@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useAudioPlay from "./hook/audioPlay";
 
 import clsx from "clsx";
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     padding: "0",
     height: "fit-content",
+    width: "35%",
     margin: "auto",
   },
   cover: {
@@ -88,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AudioBar() {
   const classes = useStyles();
-  const theme = useTheme();
   const [
     players,
     toggle,
@@ -99,22 +99,23 @@ export default function AudioBar() {
   ] = useAudioPlay(musicDataList);
   const [nowPlayNum, setNowPlayNum] = useState(0);
   const [position, setPosition] = useState(secPercentage);
-  console.log(
-    "目前的秒數 這是在上層的 secPercentage",
-    secPercentage,
-    "position",
-    position
-  );
   useMemo(() => setPosition(secPercentage), [secPercentage]);
+
+  useEffect(() => {
+    const idx = players.findIndex((audio) => audio.playing);
+    idx > -1 && setNowPlayNum(idx);
+  }, [toggle]);
 
   const arrorEvent = (str) => {
     let num = nowPlayNum;
     if (str === "pre") nowPlayNum !== 0 ? (num -= 1) : (num = 0);
     if (str === "next")
-      nowPlayNum !== musicDataList.length ? num++ : (num = nowPlayNum);
+      nowPlayNum !== musicDataList.length - 1 ? num++ : (num = nowPlayNum);
 
-    toggle(num);
-    setNowPlayNum(num);
+    if (num !== nowPlayNum) {
+      toggle(num);
+      setNowPlayNum(num);
+    }
   };
 
   return (
@@ -131,10 +132,10 @@ export default function AudioBar() {
             <CardContent className={classes.content}>
               <Typography component="div" variant="body1">
                 <Box fontWeight="fontWeightBold" textAlign="left">
-                  great pleasure
+                  {musicDataList[nowPlayNum]?.AlbumName}
                 </Box>
                 <Box fontWeight="fontWeightLight" textAlign="left">
-                  Richard Green
+                  {musicDataList[nowPlayNum]?.AlbumAuthor}
                 </Box>
               </Typography>
             </CardContent>
@@ -147,13 +148,10 @@ export default function AudioBar() {
               <IconButton
                 aria-label="previous"
                 classes={{ root: classes.audioBarColor }}
+                disableFocusRipple={nowPlayNum === 0}
                 onClick={() => arrorEvent("pre")}
               >
-                {theme.direction === "rtl" ? (
-                  <SkipNextIcon />
-                ) : (
-                  <SkipPreviousIcon />
-                )}
+                <SkipPreviousIcon />
               </IconButton>
               <IconButton
                 aria-label="play/pause"
@@ -170,11 +168,7 @@ export default function AudioBar() {
                 classes={{ root: classes.audioBarColor }}
                 onClick={() => arrorEvent("next")}
               >
-                {theme.direction === "rtl" ? (
-                  <SkipPreviousIcon />
-                ) : (
-                  <SkipNextIcon />
-                )}
+                <SkipNextIcon />
               </IconButton>
               {/* 音量Slider */}
               <Box width="30%" maxWidth="150px" ml="auto" mr="10px">

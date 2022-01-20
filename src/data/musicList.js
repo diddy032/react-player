@@ -4,7 +4,7 @@ const musicDataList = [
     AlbumAuthor: "Unicorn Heads",
     AlbumCover: "/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg",
     AlbumAudio: "/audio/URL Melt - Unicorn Heads.mp3",
-    AlbumTime: "9;55",
+    AlbumTime: "9:55",
   },
   {
     AlbumName: "Night Run Away",

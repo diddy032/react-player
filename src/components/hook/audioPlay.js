@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 export default function useAudioPlay(urls) {
   //音樂播放的陣列
@@ -103,7 +103,6 @@ export default function useAudioPlay(urls) {
       const totleLength = playing.audio.duration;
       const currentLenght = playing.audio.currentTime;
       const secPercentage = Math.ceil((currentLenght / totleLength) * 100);
-      console.log("secPercentage:", secPercentage);
       setSecPercentage(secPercentage);
     }, 1000);
 
