@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, createTheme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -13,25 +13,28 @@ import NewRelease from "./newRelease";
 import RecentAlbums from "./recentAlbums";
 import AudioBar from "./audioBar";
 
+const theme = createTheme();
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
+    height: "100%",
     position: "relative",
     flexGrow: 1,
     margin: "auto",
+    paddingBottom: "65px",
     backgroundColor: "#F5F5F5",
+    [theme.breakpoints.up("md")]: {
+      height: "100vh",
+      paddingBottom: "0",
+    },
   },
   container: {
-    // padding: "5% 30px",
-    // paddingBottom: "100px",
-    margin: "2% 0",
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    transform: "translate(-50%, -50%)",
-    // [theme.breakpoints.up("md")]: {
-    //   padding: "3% 30px",
-    // },
+    [theme.breakpoints.up("md")]: {
+      margin: "2% 0",
+      position: "absolute",
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+    },
   },
   paper: {
     width: "100%",
@@ -60,11 +63,17 @@ export default function Home() {
             </Paper>
           </Grid>
           <Box
-            position="absolute"
-            zIndex="tooltip"
-            right="0"
-            left="0"
-            bottom="0"
+            sx={{
+              position: "fixed",
+              width: "100%",
+              right: "0",
+              left: "0",
+              bottom: "0",
+              [theme.breakpoints.up("md")]: {
+                position: "absolute",
+                zIndex: "tooltip",
+              },
+            }}
           >
             <Grid container justifyContent="flex-end">
               <Grid item md={7} xs={12}>

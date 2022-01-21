@@ -1,7 +1,5 @@
-import React from "react";
-import { useState, useEffect } from "react";
 import useAudioPlay from "./hook/audioPlay";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, createTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
@@ -16,6 +14,8 @@ import IconButton from "@material-ui/core/IconButton";
 
 import musicDataList from "../data/musicList";
 
+const theme = createTheme();
+
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -24,12 +24,22 @@ const useStyles = makeStyles({
     padding: "2px 0",
   },
   avatar: {
-    marginLeft: "25px",
-    marginRight: "30px",
+    marginLeft: "12px",
+    marginRight: "15px",
+    [theme.breakpoints.up("md")]: {
+      marginLeft: "25px",
+      marginRight: "30px",
+    },
   },
   text: {
     width: "250px",
     marginRight: "30px",
+  },
+  time: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
   },
 });
 
@@ -52,7 +62,7 @@ export default function TopSongs() {
                 alignItems="center"
                 classes={{ root: classes.inlineItem }}
               >
-                <Box>
+                <Box xs={{}}>
                   <ListItemText primary={index + 1} />
                 </Box>
                 <ListItemAvatar>
@@ -67,7 +77,10 @@ export default function TopSongs() {
                   primary={item.AlbumName}
                   classes={{ root: classes.text }}
                 />
-                <ListItemText primary={item.AlbumTime} />
+                <ListItemText
+                  primary={item.AlbumTime}
+                  classes={{ root: classes.time }}
+                />
                 <HandlePlayMusic
                   playing={players[index].playing}
                   toggle={() => toggle(index)}

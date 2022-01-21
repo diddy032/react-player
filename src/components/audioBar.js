@@ -4,12 +4,11 @@ import useAudioPlay from "./hook/audioPlay";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, createTheme } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
@@ -25,45 +24,80 @@ import VolumeOffIcon from "@material-ui/icons/VolumeOff";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import musicDataList from "../data/musicList";
-
+const theme = createTheme();
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
   details: {
-    padding: theme.spacing(1.2, 2),
+    padding: theme.spacing(1),
     display: "flex",
+    justifyContent: "space-between",
     flexDirection: "row",
     color: "#fff",
+    [theme.breakpoints.up("md")]: {
+      padding: theme.spacing(1.2, 2),
+      justifyContent: "space-between",
+    },
   },
   content: {
     padding: "0",
     height: "fit-content",
-    width: "35%",
-    margin: "auto",
+    margin: "auto 0",
+    [theme.breakpoints.up("md")]: {
+      width: "35%",
+      margin: "auto",
+    },
   },
   cover: {
-    width: "96px",
-    height: "96px",
+    width: "65px",
+    height: "65px",
+    [theme.breakpoints.up("md")]: {
+      width: "96px",
+      height: "96px",
+    },
   },
   toolArea: {
     height: "100%",
     width: "100%",
     backgroundColor: "rgba(0 ,0 ,0 , 0.8)",
   },
+  controls: {
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      alignItems: "center",
+      flex: "auto",
+    },
+  },
   playIcon: {
-    height: 38,
-    width: 38,
-    padding: "5px",
+    height: 20,
+    width: 20,
+    padding: "2px",
     color: "#000",
     background: "#fff",
     borderRadius: "50%",
+    [theme.breakpoints.up("md")]: {
+      height: 38,
+      width: 38,
+      padding: "5px",
+    },
   },
   audioBarColor: {
     color: "#fff",
   },
+  audioBarIcon: {
+    padding: "12px 0",
+    [theme.breakpoints.up("md")]: {
+      padding: "12px",
+    },
+  },
   zoomOutIcon: {
+    display: "none",
     paddingRight: "0",
+    [theme.breakpoints.up("md")]: {
+      display: "initial",
+      marginRight: 0,
+    },
   },
   musicProgress: {
     height: "5px",
@@ -102,9 +136,9 @@ export default function AudioBar() {
   useMemo(() => setPosition(secPercentage), [secPercentage]);
 
   useEffect(() => {
-    const idx = players.findIndex((audio) => audio.playing);
+    const idx = players?.findIndex((audio) => audio?.playing);
     idx > -1 && setNowPlayNum(idx);
-  }, [toggle]);
+  }, [toggle, players]);
 
   const arrorEvent = (str) => {
     let num = nowPlayNum;
@@ -130,7 +164,7 @@ export default function AudioBar() {
         <div className={classes.toolArea}>
           <div className={classes.details}>
             <CardContent className={classes.content}>
-              <Typography component="div" variant="body1">
+              <Typography component="div" variant="body1" noWrap>
                 <Box fontWeight="fontWeightBold" textAlign="left">
                   {musicDataList[nowPlayNum]?.AlbumName}
                 </Box>
@@ -139,15 +173,12 @@ export default function AudioBar() {
                 </Box>
               </Typography>
             </CardContent>
-            <Box
-              display="flex"
-              alignItems="center"
-              flex="auto"
-              // className={classes.controls}
-            >
+            <Box className={classes.controls}>
               <IconButton
                 aria-label="previous"
-                classes={{ root: classes.audioBarColor }}
+                classes={{
+                  root: clsx(classes.audioBarColor, classes.audioBarIcon),
+                }}
                 disableFocusRipple={nowPlayNum === 0}
                 onClick={() => arrorEvent("pre")}
               >
@@ -165,13 +196,26 @@ export default function AudioBar() {
               </IconButton>
               <IconButton
                 aria-label="next"
-                classes={{ root: classes.audioBarColor }}
+                classes={{
+                  root: clsx(classes.audioBarColor, classes.audioBarIcon),
+                }}
                 onClick={() => arrorEvent("next")}
               >
                 <SkipNextIcon />
               </IconButton>
               {/* 音量Slider */}
-              <Box width="30%" maxWidth="150px" ml="auto" mr="10px">
+              <Box
+                width="30%"
+                maxWidth="150px"
+                ml="auto"
+                mr="10px"
+                sx={{
+                  display: "none",
+                  [theme.breakpoints.up("md")]: {
+                    display: "initial",
+                  },
+                }}
+              >
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
                     {volume !== 0 ? <VolumeUp /> : <VolumeOffIcon />}
@@ -196,7 +240,11 @@ export default function AudioBar() {
                 p="0"
                 aria-label="ZoomOutPlayer"
                 classes={{
-                  root: clsx(classes.audioBarColor, classes.zoomOutIcon),
+                  root: clsx(
+                    classes.audioBarColor,
+                    classes.zoomOutIcon,
+                    classes.audioBarIcon
+                  ),
                 }}
               >
                 <ZoomOutMapIcon />
@@ -208,13 +256,16 @@ export default function AudioBar() {
           <Slider
             aria-label="time-indicator"
             size="small"
+            defaultValue={0}
             value={position}
             min={0}
             step={1}
             max={100}
-            onChange={(_, value) => (
-              setPosition(value), handleChangeMusecSec(value)
-            )}
+            valueLabelDisplay="on"
+            onChange={(_, value) => {
+              setPosition(value);
+              handleChangeMusecSec(value);
+            }}
             classes={{
               root: classes.progressStyle,
             }}

@@ -1,28 +1,33 @@
-import React from "react";
 import {
   withStyles,
   makeStyles,
   createTheme,
   ThemeProvider,
+  responsiveFontSizes,
 } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { orange } from "@material-ui/core/colors";
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "auto",
+    marginTop: "20px",
     maxWidth: 600,
     boxShadow: "none",
     position: "relative",
     backgroundColor: "transparent",
     overflow: "initial",
     zIndex: "2",
+    [theme.breakpoints.up("md")]: {
+      marginTop: 0,
+    },
     "&::before": {
       content: '""',
       maxWidth: "530px",
@@ -32,11 +37,8 @@ const useStyles = makeStyles((theme) => ({
       position: "absolute",
       top: "-4%",
       left: "-5%",
-      // top: "-40px",
-      // left: "-53px",
       zIndex: "0",
       height: "70vw",
-      zIndex: "2",
       [theme.breakpoints.up("sm")]: {
         height: "55vw",
       },
@@ -63,31 +65,32 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   followInfo: {
-    marginRight: "auto",
+    margin: "auto",
+    marginBottom: "20px",
     textTransform: "uppercase",
+    textAlign: "center",
+    [theme.breakpoints.up("md")]: {
+      margin: "0",
+      marginRight: "auto",
+      marginBottom: "0",
+      textAlign: "left",
+    },
   },
   button: {
-    marginLeft: "auto",
+    margin: "5px auto",
     padding: "5px 40px",
     borderRadius: "22px",
     fontSize: "16px",
     height: " min-content",
+    [theme.breakpoints.up("md")]: {
+      margin: "0",
+      marginLeft: "auto",
+    },
   },
   roy: {
     margin: 20,
   },
 }));
-const theme = createTheme();
-
-theme.typography.h2 = {
-  fontSize: "1.2rem",
-  "@media (min-width:600px)": {
-    fontSize: "1.5rem",
-  },
-  [theme.breakpoints.up("md")]: {
-    fontSize: "3.75rem",
-  },
-};
 
 const FallowButton = withStyles((theme) => ({
   root: {
@@ -123,7 +126,12 @@ export default function AlbumCard() {
           />
         </CardContent>
       </Card>
-      <Box width="80%">
+      <Box
+        sx={{
+          width: "100%",
+          [theme.breakpoints.up("md")]: { width: "80%" },
+        }}
+      >
         <ThemeProvider theme={theme}>
           <Typography variant="h2" component="div" align="left">
             <Box
@@ -140,32 +148,38 @@ export default function AlbumCard() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            flexDirection: "column",
             alignItems: "end",
             marginTop: "15px",
+            [theme.breakpoints.up("md")]: {
+              flexDirection: "initial",
+              justifyContent: "space-between",
+            },
           }}
         >
-          <Typography
-            gutterBottom
-            component="div"
-            align="left"
-            className={classes.followInfo}
-          >
-            <Box
-              fontWeight="fontWeightBold"
-              fontSize="h6.fontSize"
-              lineHeight="normal"
+          <ThemeProvider theme={theme}>
+            <Typography
+              gutterBottom
+              component="div"
+              align="left"
+              className={classes.followInfo}
             >
-              followers
-            </Box>
-            <Box
-              fontWeight="fontWeightBold"
-              fontSize="h4.fontSize"
-              lineHeight="normal"
-            >
-              5,790
-            </Box>
-          </Typography>
+              <Box
+                fontWeight="fontWeightBold"
+                fontSize="h5.fontSize"
+                lineHeight="normal"
+              >
+                followers
+              </Box>
+              <Box
+                fontWeight="fontWeightBold"
+                fontSize="h3.fontSize"
+                lineHeight="normal"
+              >
+                5,790
+              </Box>
+            </Typography>
+          </ThemeProvider>
           <FallowButton
             className={classes.button}
             size="medium"

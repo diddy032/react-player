@@ -1,5 +1,4 @@
-import React from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -24,7 +23,6 @@ const useStyles = makeStyles(() => ({
 
 export default function NewRelease() {
   const classes = useStyles();
-  const theme = useTheme();
 
   return (
     <Box my={2}>
