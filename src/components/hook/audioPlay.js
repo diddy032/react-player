@@ -1,40 +1,52 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { makeObservable } from "../../utils/makeObservable";
+import update from "immutability-helper";
+
+import musicDataList from "../../data/musicList";
+
+const playStore = makeObservable(
+  musicDataList.map((url) => {
+    return {
+      url: url.AlbumAudio,
+      playing: false,
+      followPlay: false,
+      currentTime: 0,
+    };
+  })
+);
+
+const secStore = makeObservable(0);
+
+//音樂播放的陣列
+const sources = musicDataList.map((url) => {
+  return {
+    url: url.AlbumAudio,
+    audio: new Audio(url.AlbumAudio),
+  };
+});
 
 export default function useAudioPlay(urls) {
-  //音樂播放的陣列
-  const [sources] = useState(
-    urls.map((url) => {
-      return {
-        url: url.AlbumAudio,
-        audio: new Audio(url.AlbumAudio),
-      };
-    })
-  );
-
   //音樂狀態的陣列
-  const [players, setPlayers] = useState(
-    urls.map((url) => {
-      return {
-        url: url.AlbumAudio,
-        playing: false,
-        followPlay: false,
-        currentTime: 0,
-      };
-    })
-  );
+  const [players, setPlayers] = useState(playStore.get());
+
+  useEffect(() => {
+    return (
+      playStore.subscribe(setPlayers), secStore.subscribe(setSecPercentage)
+    );
+  }, []);
 
   //音量
   const [volume, setVolume] = useState(30);
 
   //目前播放的物件秒數
-  const [secPercentage, setSecPercentage] = useState(0);
+  const [secPercentage, setSecPercentage] = useState(secStore.get());
 
   //儲存 setIntervalId , 之後會需要取消
   const [intervalId, setIntervalId] = useState();
 
   //偵測如果音樂狀態是true就播放，反之暫停
-  useEffect(() => {
-    sources.forEach((item, i) => {
+  useMemo(() => {
+    sources?.forEach((item, i) => {
       if (players[i].playing) {
         item.audio.play();
       } else {
@@ -42,11 +54,11 @@ export default function useAudioPlay(urls) {
         item.audio.pause();
       }
     });
-  }, [sources, players]);
+  }, [players]);
 
   //檢測音量數值
-  useEffect(() => {
-    sources.forEach((item, i) => {
+  useMemo(() => {
+    sources?.forEach((item) => {
       item.audio.volume = volume / 100;
     });
   }, [volume]);
@@ -54,17 +66,23 @@ export default function useAudioPlay(urls) {
   useEffect(() => {
     sources.forEach((item, i) => {
       item.audio.addEventListener("ended", () => {
-        const newPlayers = [...players];
-        newPlayers[i].playing = false;
-        setPlayers(newPlayers);
+        // const newPlayers = [...players];
+        // newPlayers[i].playing = false;
+        const newData = update(players, { i: { playing: { $splice: false } } });
+        playStore.set([...newData]);
+        // setPlayers(newPlayers);
       });
     });
     return () => {
       sources.forEach((item, i) => {
         item.audio.removeEventListener("ended", () => {
-          const newPlayers = [...players];
-          newPlayers[i].playing = false;
-          setPlayers(newPlayers);
+          const newData = update(players, {
+            i: { playing: { $splice: false } },
+          });
+          playStore.set([...newData]);
+          // const newPlayers = [...players];
+          // newPlayers[i].playing = false;
+          // setPlayers(newPlayers);
         });
       });
     };
@@ -72,13 +90,14 @@ export default function useAudioPlay(urls) {
 
   //點擊按鈕後的行為
   const toggle = (targetIndex, followPlay) => {
-    const newPlayers = [...players];
+    let newPlayers = [...players];
     const currentIndex = players.findIndex((e) => e.playing === true); //找出第幾個音樂播放
     if (currentIndex !== -1 && currentIndex !== targetIndex) {
       newPlayers[currentIndex].playing = false;
       newPlayers[currentIndex].followPlay = false;
       newPlayers[targetIndex].playing = true;
       newPlayers[targetIndex].followPlay = false;
+
       clearInterval(intervalId);
       setIntervalId(countMusicSec(sources[targetIndex]));
     } else if (currentIndex !== -1) {
@@ -94,7 +113,8 @@ export default function useAudioPlay(urls) {
       newPlayers[targetIndex].playing = true;
       setIntervalId(countMusicSec(sources[targetIndex]));
     }
-    setPlayers(newPlayers);
+    const newData = update(players, { $set: newPlayers });
+    playStore.set([...newData]);
   };
 
   //計算秒數
@@ -103,7 +123,7 @@ export default function useAudioPlay(urls) {
       const totleLength = playing.audio.duration;
       const currentLenght = playing.audio.currentTime;
       const secPercentage = Math.ceil((currentLenght / totleLength) * 100);
-      setSecPercentage(secPercentage);
+      secStore.set(secPercentage);
     }, 1000);
 
     return refreshIntervalId;

@@ -45,7 +45,7 @@ const useStyles = makeStyles({
 
 export default function TopSongs() {
   const classes = useStyles();
-  const [players, toggle] = useAudioPlay(musicDataList);
+  const [players, toggle] = useAudioPlay();
 
   return (
     <div>
@@ -83,7 +83,7 @@ export default function TopSongs() {
                 />
                 <HandlePlayMusic
                   playing={players[index].playing}
-                  toggle={() => toggle(index)}
+                  toggle={() => toggle(index, true)}
                 />
               </ListItem>
               <Divider variant="middle" component="li" />

@@ -130,7 +130,7 @@ export default function AudioBar() {
     setVolume,
     handleChangeMusecSec,
     secPercentage,
-  ] = useAudioPlay(musicDataList);
+  ] = useAudioPlay();
   const [nowPlayNum, setNowPlayNum] = useState(0);
   const [position, setPosition] = useState(secPercentage);
   useMemo(() => setPosition(secPercentage), [secPercentage]);
