@@ -34,7 +34,7 @@ export default function NewRelease() {
       <Card className={classes.root}>
         <CardMedia
           className={classes.cover}
-          image="/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg"
+          image="/react-player/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg"
           title="Live from space album cover"
         />
         <CardContent className={classes.content}>

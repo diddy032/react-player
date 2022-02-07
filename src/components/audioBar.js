@@ -156,7 +156,8 @@ export default function AudioBar() {
     <Box>
       <Card className={classes.root}>
         <Avatar
-          src="/images/david-clode-xNSCi_K179c-unsplash.jpg"
+          src="/react-player/images/david-clode-xNSCi_K179c-unsplash.jpg"
+          src={musicDataList[nowPlayNum]?.AlbumCover}
           alt="Live from space album cover"
           variant="square"
           classes={{ root: classes.cover }}

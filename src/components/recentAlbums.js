@@ -76,26 +76,27 @@ const useStyles = makeStyles((theme) => ({
 const itemData = [
   {
     AlbumName: "explorer of the truth",
-    AlbumCover: "/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
+    AlbumCover: "/react-player/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
     AlbumTime: "5:34",
     AlbumYear: "2018",
   },
   {
     AlbumName: "great pleasure",
-    AlbumCover: "/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg",
+    AlbumCover:
+      "/react-player/images/henrik-donnestad-V6Qd6zA85ck-unsplash.jpg",
     AlbumTime: "5:34",
     AlbumYear: "2017",
   },
   {
     AlbumName: "mistaken idea",
-    AlbumCover: "/images/david-clode-xNSCi_K179c-unsplash.jpg",
+    AlbumCover: "/react-player/images/david-clode-xNSCi_K179c-unsplash.jpg",
     AlbumTime: "5:34",
     AlbumYear: "2015",
   },
 
   {
     AlbumName: "master builder",
-    AlbumCover: "/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
+    AlbumCover: "/react-player/images/noah-silliman-gzhyKEo_cbU-unsplash.jpg",
     AlbumTime: "5:34",
     AlbumYear: "2013",
   },

@@ -120,7 +120,7 @@ export default function AlbumCard() {
         <CardContent className={classes.content}>
           <CardMedia
             className={classes.media}
-            image="/images/richard-jaimes-jI5lCCGprgM-unsplash.jpg"
+            image="/react-player/images/richard-jaimes-jI5lCCGprgM-unsplash.jpg"
             title="Album Image"
             variant="square"
           />
