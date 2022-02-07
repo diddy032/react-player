@@ -17,6 +17,8 @@ const playStore = makeObservable(
 
 const secStore = makeObservable(0);
 
+const intervalIdStore = makeObservable();
+
 //音樂播放的陣列
 const sources = musicDataList.map((url) => {
   return {
@@ -29,12 +31,6 @@ export default function useAudioPlay(urls) {
   //音樂狀態的陣列
   const [players, setPlayers] = useState(playStore.get());
 
-  useEffect(() => {
-    return (
-      playStore.subscribe(setPlayers), secStore.subscribe(setSecPercentage)
-    );
-  }, []);
-
   //音量
   const [volume, setVolume] = useState(30);
 
@@ -42,7 +38,15 @@ export default function useAudioPlay(urls) {
   const [secPercentage, setSecPercentage] = useState(secStore.get());
 
   //儲存 setIntervalId , 之後會需要取消
-  const [intervalId, setIntervalId] = useState();
+  const [intervalId, setIntervalId] = useState(intervalIdStore.get());
+
+  useEffect(() => {
+    return (
+      playStore.subscribe(setPlayers),
+      secStore.subscribe(setSecPercentage),
+      intervalIdStore.subscribe(setIntervalId)
+    );
+  }, []);
 
   //偵測如果音樂狀態是true就播放，反之暫停
   useMemo(() => {
@@ -92,14 +96,15 @@ export default function useAudioPlay(urls) {
   const toggle = (targetIndex, followPlay) => {
     let newPlayers = [...players];
     const currentIndex = players.findIndex((e) => e.playing === true); //找出第幾個音樂播放
+    intervalId && clearInterval(intervalId);
+
     if (currentIndex !== -1 && currentIndex !== targetIndex) {
       newPlayers[currentIndex].playing = false;
       newPlayers[currentIndex].followPlay = false;
       newPlayers[targetIndex].playing = true;
       newPlayers[targetIndex].followPlay = false;
-
-      clearInterval(intervalId);
-      setIntervalId(countMusicSec(sources[targetIndex]));
+      intervalIdStore.set(countMusicSec(sources[targetIndex]));
+      secStore.set(0);
     } else if (currentIndex !== -1) {
       newPlayers[targetIndex].playing = false;
       if (followPlay) {
@@ -108,10 +113,9 @@ export default function useAudioPlay(urls) {
         newPlayers[targetIndex].currentTime =
           sources[targetIndex].audio.currentTime;
       }
-      clearInterval(intervalId);
     } else {
       newPlayers[targetIndex].playing = true;
-      setIntervalId(countMusicSec(sources[targetIndex]));
+      intervalIdStore.set(countMusicSec(sources[targetIndex]));
     }
     const newData = update(players, { $set: newPlayers });
     playStore.set([...newData]);
